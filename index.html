@@ -527,6 +527,72 @@
         .v-btn-red:hover {
             opacity: 0.85;
         }
+
+        /* =========================================
+           TACTICAL RESPONSIVE PROTOCOL (MOBILE/TABLET)
+           ========================================= */
+        @media (max-width: 1024px) {
+            .ui-wrapper {
+                flex-direction: column;
+                padding: 30px;
+                overflow-y: auto;
+            }
+            .left-panel {
+                width: 100%;
+                height: auto;
+                margin-bottom: 40px;
+            }
+            .main-menu {
+                margin-top: 30px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .menu-btn {
+                font-size: 20px;
+                padding: 10px 15px;
+            }
+            .menu-btn::before { top: 0; height: 100%; }
+            .right-panel {
+                margin-left: 0;
+                height: auto;
+            }
+            .screen-content {
+                position: relative; /* Disables absolute overlap so content can push down */
+                display: none;
+                transform: none;
+            }
+            .screen-content.active {
+                display: flex;
+            }
+            .modes-grid, .roster-grid {
+                grid-template-columns: repeat(2, 1fr);
+                max-height: none;
+                overflow-y: visible;
+            }
+            .welcome-art-container {
+                height: 40vh;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .ui-wrapper { padding: 15px; }
+            .main-menu { flex-direction: column; align-items: flex-start; }
+            .menu-btn { font-size: 24px; padding: 10px 0 10px 20px; }
+            .modes-grid, .roster-grid { grid-template-columns: 1fr; }
+            .screen-title {
+                font-size: 28px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .welcome-heading { font-size: 28px; }
+            .setting-row { 
+                flex-direction: column; 
+                gap: 15px; 
+                align-items: flex-start; 
+            }
+        }
     </style>
 </head>
 <body>
