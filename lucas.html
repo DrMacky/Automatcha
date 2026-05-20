@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automata Lab: Lucas Sequence // Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #0f1923;
+            background-image: 
+                linear-gradient(rgba(15, 25, 35, 0.95), rgba(15, 25, 35, 0.95)),
+                url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%231f2937' fill-opacity='0.15' fill-rule='evenodd'%3E%3C/path%3E%3C/svg%3E");
+        }
+        .v-title {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .v-panel {
+            background-color: #111e2e;
+            border-left: 4px solid #ff4655;
+            box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .v-panel::before {
+            content: "/// LUC-P-4";
+            position: absolute;
+            top: 6px;
+            right: 12px;
+            font-size: 0.75rem;
+            color: rgba(255, 70, 85, 0.4);
+        }
+        .v-input {
+            background-color: #0f1923;
+            border: 1px solid #383e47;
+            color: #ece8e1;
+            transition: all 0.2s ease;
+        }
+        .v-input:focus:not(:disabled) {
+            border-color: #ff4655;
+            outline: none;
+            box-shadow: 0 0 8px rgba(255, 70, 85, 0.3);
+        }
+        .v-input:disabled {
+            background-color: rgba(15, 25, 35, 0.5);
+            border-color: #2a2f35;
+            color: #555e68;
+            cursor: not-allowed;
+        }
+        .v-btn-primary {
+            background-color: #ff4655;
+            color: #ece8e1;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            clip-path: polygon(0 0, 93% 0, 100% 30%, 100% 100%, 7% 100%, 0 70%);
+            transition: all 0.15s ease;
+        }
+        .v-btn-primary:hover:not(:disabled) {
+            background-color: #ece8e1;
+            color: #111e2e;
+        }
+        .v-btn-primary:disabled {
+            background-color: #222b35;
+            color: #4b5563;
+            cursor: not-allowed;
+        }
+        .v-btn-primary:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .v-btn-secondary {
+            background-color: transparent;
+            color: #ece8e1;
+            border: 1px solid #383e47;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            clip-path: polygon(0 0, 93% 0, 100% 30%, 100% 100%, 7% 100%, 0 70%);
+            transition: all 0.15s ease;
+        }
+        .v-btn-secondary:hover {
+            border-color: #ece8e1;
+            background-color: rgba(236, 232, 225, 0.05);
+        }
+        .v-btn-danger {
+            background-color: rgba(219, 39, 119, 0.1);
+            color: #f43f5e;
+            border: 1px solid #f43f5e;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            clip-path: polygon(0 0, 93% 0, 100% 30%, 100% 100%, 7% 100%, 0 70%);
+            transition: all 0.15s ease;
+        }
+        .v-btn-danger:hover {
+            background-color: #f43f5e;
+            color: #0f1923;
+        }
+        .v-btn-accent {
+            background-color: #00f3c5;
+            color: #0f1923;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            clip-path: polygon(0 0, 93% 0, 100% 30%, 100% 100%, 7% 100%, 0 70%);
+            transition: all 0.15s ease;
+        }
+        .v-btn-accent:hover {
+            background-color: #ece8e1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 text-base tracking-wide text-[#ece8e1]">
+
+    <div id="mainCard" class="v-panel w-full max-w-2xl p-6 border border-slate-800 transition-all duration-500">
+
+        <div id="systemStatus" class="hidden bg-red-950/40 text-red-500 border border-red-500 p-3 text-center font-bold tracking-widest uppercase animate-pulse mb-4 text-sm font-sans">
+            System Terminated
+        </div>
+
+        <div class="border-b border-slate-700 pb-4 mb-6 flex justify-between items-end">
+            <div>
+                <span class="text-xs text-[#ff4655] font-bold tracking-widest block mb-1">// VALORANT PROTOCOL // SYSTEM_LAB_04</span>
+                <h1 class="v-title text-4xl font-bold text-white">RECURSION CORE MODULE</h1>
+            </div>
+           <a href="index.html?view=start" class="v-btn-secondary px-4 py-1.5 text-xs font-bold uppercase mb-1">
+    &lt; BACK TO MENU
+</a>
+        </div>
+
+        <div class="bg-[#1b2735] p-5 border border-slate-700 relative overflow-hidden mb-6">
+            <div class="absolute top-0 left-0 w-1 h-full bg-[#ff4655]"></div>
+            <h3 class="v-title text-[#ff4655] text-xl font-bold mb-3 tracking-wider">RECURSIVE SEQUENCES OVERVIEW</h3>
+            
+            <p class="mb-4 text-slate-300 text-sm leading-relaxed">A sequence a₁, a₂, a₃,..., aₙ, is defined recursively by executing two critical vector components:</p>
+            
+            <div class="space-y-3 text-sm">
+                <div class="flex items-start gap-3">
+                    <span class="text-[#ff4655] font-bold">[I]</span>
+                    <p><span class="text-white font-bold">INITIAL DATA MATRIX:</span> A defined baseline of structural initialization parameters a₁, a₂,... , aᵣ foundational to the calculation stream.</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-[#ff4655] font-bold">[II]</span>
+                    <p><span class="text-white font-bold">RECURSION PROTOCOL RULE:</span> The algorithmic mathematical formula determining how any arbitrary variable index aₙ parses its preceding terms—active for conditions where n > r.</p>
+                </div>
+            </div>
+
+            <p class="mt-4 italic text-slate-400 border-t border-slate-700 pt-2 text-xs">
+                // DATA_NOTE: Node values generated through iterative sequences may map to primitive scalar digits, system graphs, or complex terminal data arrays.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex justify-between items-center bg-[#0f1923] p-3 border border-slate-800">
+                <h2 class="v-title text-xl font-bold text-white tracking-wider">SEQUENCE // LUCAS_NUMBERS</h2>
+                <span class="text-xs bg-[#ff4655] px-2 py-0.5 text-white font-bold">READY TO INITIALIZE</span>
+            </div>
+            
+            <div class="bg-[#1b2735]/40 p-4 border border-slate-800 text-sm">
+                <p class="text-slate-300">Mirrors the baseline mathematical structure of the core Fibonacci curve sequence, modified with alternate signature initial inputs L0 = 2 and L1 = 1.</p>
+                <p class="mt-2 text-yellow-400 font-bold tracking-wider text-xs">LOGIC RULE: Ln = Ln-1 + Ln-2 (where n ≥ 2). BASELINE MAP: L0=2, L1=1</p>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <label for="num-terms" class="text-xs font-bold text-slate-400 uppercase tracking-widest">Specify Target Stream Length (n):</label>
+                <input type="text" id="num-terms" class="v-input w-full p-3 font-mono text-lg" placeholder="INPUT THE NUMBER OF TERMS...">
+
+                <button id="execBtn" onclick="calculate()" class="v-btn-primary w-full py-3 text-md font-bold uppercase mt-2">
+                    RUN EXECUTION COMPUTE
+                </button>
+            </div>
+
+            <div id="resultBox" class="hidden mt-6 border border-[#00f3c5] bg-[#0f1923] p-4 relative">
+                <div class="absolute top-0 right-0 bg-[#00f3c5] text-[#0f1923] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest">Data Stream Decrypted</div>
+                <p class="text-[#00f3c5] text-xs font-bold tracking-widest mb-1">// RENDERED ARRAY RESULT:</p>
+                <p id="result-text" class="text-white font-mono break-words tracking-wide leading-relaxed bg-[#111e2e]/50 p-3 border border-slate-900 max-h-40 overflow-y-auto"></p>
+
+                <div id="loopPrompt" class="hidden mt-6 border border-slate-700 bg-[#111e2e] p-4 text-center">
+                    <p class="text-xs text-slate-300 font-bold uppercase tracking-widest mb-3">// INITIALIZE ANOTHER PAIR SEQUENCE DATA LOOP?</p>
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="resetSystem()" class="v-btn-accent px-8 py-2 text-sm font-bold uppercase">Yes</button>
+                        <button onclick="terminateSystem('MANUAL OVERRIDE')" class="v-btn-danger px-8 py-2 text-sm font-bold uppercase">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-[#111e2e] w-full max-w-sm border-l-4 border-[#ff4655] shadow-2xl border border-slate-800">
+            <div class="p-6">
+                <div class="flex items-center gap-2 text-[#ff4655] font-bold text-xs tracking-widest mb-2">// ACCESS DENIED</div>
+                <h3 class="v-title text-white font-black text-2xl uppercase mb-3 tracking-wide">PROTOCOL FAULT DETECTED</h3>
+                <p id="modalMsg" class="text-slate-300 font-medium text-sm leading-relaxed mb-6 font-sans"></p>
+                <button onclick="closeModal()" class="v-btn-primary w-full py-2.5 text-sm font-bold uppercase">
+                    ACKNOWLEDGE ERROR
+                </button>
+            </div>
+        </div>
+    </div>
+
+<!-- VALORANT Defeat Lockout Screen -->
+    <div id="defeatScreen" class="fixed inset-0 bg-[#0f1923] flex flex-col items-center justify-center hidden z-[9999] overflow-hidden">
+        <!-- Background Tint & Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-[#ff4655]/20 to-transparent"></div>
+        <div class="absolute inset-0 border-[16px] border-[#ff4655]/30 pointer-events-none"></div>
+        
+        <!-- Defeat Typography -->
+        <div class="relative z-10 flex flex-col items-center">
+            <h1 class="v-title text-[8rem] md:text-[12rem] text-[#ff4655] leading-none tracking-[0.1em] drop-shadow-[0_0_40px_rgba(255,70,85,0.6)]">DEFEAT</h1>
+            <p class="text-white font-mono text-xl md:text-2xl tracking-[0.4em] uppercase mt-2 border-b border-[#ff4655] pb-4 px-8">System Lockout Initiated</p>
+        </div>
+        
+        <!-- 10-Second Reboot Timer -->
+        <div class="mt-16 z-10 flex flex-col items-center bg-[#111e2e] border border-slate-700 p-6 px-12 shadow-2xl relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-[#ff4655]"></div>
+            <p class="text-slate-400 font-bold text-sm tracking-widest mb-3 uppercase">// Rebooting Core Engine in:</p>
+            <div class="text-7xl font-mono text-white tracking-wider" id="lockoutTimer">10.00</div>
+        </div>
+    </div>
+    
+    <script>
+        const MAX_TERMS = 1000;
+
+      let errorCount = 0;
+        let isLockedOut = false;
+
+        function showModal(msg) {
+            if (isLockedOut) return; // Block alerts while locked out
+
+            errorCount++;
+
+            if (errorCount >= 3) {
+                triggerDefeatScreen();
+            } else {
+                const warningsLeft = 3 - errorCount;
+                const warningText = warningsLeft === 1 ? "1 ATTEMPT REMAINING" : "2 ATTEMPTS REMAINING";
+                
+                // Add the warning tracker below the standard error message
+                document.getElementById('modalMsg').innerHTML = msg + `<br><br><span class="text-[#ff4655] font-bold tracking-widest text-xs">// WARNING: ${warningText} BEFORE LOCKOUT</span>`;
+                document.getElementById('modal').classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function triggerDefeatScreen() {
+            // Hide the standard error modal and blur the main card
+            closeModal();
+            isLockedOut = true;
+            document.getElementById('mainCard').style.filter = "blur(8px)";
+            document.getElementById('mainCard').style.opacity = "0.5";
+            
+            // Dramatic Audio Shift: Pause BGM, Play Spike Timer
+            const mainAudio = document.getElementById('globalBgMusic');
+            const spikeAudio = document.getElementById('spikeTimerAudio');
+            
+            if (mainAudio && !mainAudio.paused) {
+                mainAudio.pause();
+            }
+            if (spikeAudio) {
+                spikeAudio.volume = 0.5; // Adjust volume as needed
+                spikeAudio.currentTime = 0;
+                spikeAudio.play().catch(err => console.log("Audio block:", err));
+            }
+
+            // Show the Defeat UI
+            const defeatScreen = document.getElementById('defeatScreen');
+            const timerDisplay = document.getElementById('lockoutTimer');
+            defeatScreen.classList.remove('hidden');
+            
+            // Start the 10-second precise countdown
+            let timeLeft = 10.00;
+            timerDisplay.innerText = timeLeft.toFixed(2);
+            
+            const countdown = setInterval(() => {
+                timeLeft -= 0.01;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    timerDisplay.innerText = "0.00";
+                    rebootSystem();
+                } else {
+                    timerDisplay.innerText = timeLeft.toFixed(2);
+                }
+            }, 10);
+        }
+
+        function rebootSystem() {
+            // Reset variables and remove Defeat UI
+            isLockedOut = false;
+            errorCount = 0;
+            
+            document.getElementById('defeatScreen').classList.add('hidden');
+            document.getElementById('mainCard').style.filter = "none";
+            document.getElementById('mainCard').style.opacity = "1";
+            
+            // Stop Spike audio and resume Main audio if it was enabled
+            const spikeAudio = document.getElementById('spikeTimerAudio');
+            const mainAudio = document.getElementById('globalBgMusic');
+            const audioState = localStorage.getItem(AUDIO_STORAGE_KEY);
+            
+            if (spikeAudio) {
+                spikeAudio.pause();
+                spikeAudio.currentTime = 0;
+            }
+            if (mainAudio && audioState === 'enabled') {
+                mainAudio.play().catch(err => console.log("Audio block:", err));
+            }
+
+            // Clear inputs for a fresh start
+            resetSystem();
+        }
+
+        function calculate() {
+            const raw = document.getElementById('num-terms').value.trim();
+            const resultBox = document.getElementById('resultBox');
+            const loopPrompt = document.getElementById('loopPrompt');
+
+            resultBox.classList.add('hidden');
+            loopPrompt.classList.add('hidden');
+
+            // 1. Empty input check
+            if (!raw) {
+                return showModal("SYSTEM ERROR: Stream length parameter is missing. Please provide a valid input.");
+            }
+
+            // 2. Non-integer / decimal / letter check
+            const intRegex = /^\d+$/;
+            if (!intRegex.test(raw)) {
+                return showModal("SYNTAX ERROR: Letters, symbols, decimals or negative signs detected. Protocol requires a positive whole integer only.");
+            }
+
+            const n = parseInt(raw);
+
+            // 3. Zero check
+            if (n === 0) {
+                return showModal("VALIDATION ERROR: Stream length cannot be zero. Input must be a positive integer of at least 1.");
+            }
+
+            // 4. Minimum viable length for meaningful output
+if (n <= 2) {
+    return showModal("VALIDATION ERROR: Sequence requires a stream length strictly greater than 2.");
+}
+
+            // 5. Upper bound safety cap
+            if (n > MAX_TERMS) {
+                return showModal(`EXECUTION FAULT: Stream length exceeds the system safety buffer cap of ${MAX_TERMS} terms. Reduce the input value to prevent compute overflow.`);
+            }
+
+            let sequence = [2, 1];
+            for (let i = 2; i < n; i++) {
+                sequence.push(sequence[i - 1] + sequence[i - 2]);
+            }
+
+            document.getElementById('result-text').innerText = sequence.slice(0, n).join(', ');
+            resultBox.classList.remove('hidden');
+            loopPrompt.classList.remove('hidden');
+            document.getElementById('execBtn').disabled = true;
+        }
+
+        function resetSystem() {
+            document.getElementById('num-terms').value = '';
+            document.getElementById('resultBox').classList.add('hidden');
+            document.getElementById('loopPrompt').classList.add('hidden');
+            document.getElementById('result-text').innerText = '';
+            document.getElementById('execBtn').disabled = false;
+            document.getElementById('num-terms').focus();
+        }
+
+        function terminateSystem(reason) {
+            const input = document.getElementById('num-terms');
+            const btn = document.getElementById('execBtn');
+            const status = document.getElementById('systemStatus');
+            const card = document.getElementById('mainCard');
+
+            document.getElementById('loopPrompt').classList.add('hidden');
+
+            input.disabled = true;
+            btn.disabled = true;
+
+            card.style.borderLeftColor = '#475569';
+
+            status.innerText = `SYSTEM TERMINATED // ${reason}`;
+            status.classList.remove('hidden');
+        }
+    </script>
+
+    <div class="fixed bottom-4 right-4 z-50">
+        <button id="audioToggleBtn" onclick="toggleGlobalAudio()" class="v-btn-secondary px-3 py-2 text-xs font-bold uppercase tracking-widest flex items-center gap-2 bg-[#111e2e]/90 backdrop-blur">
+            🔊 AUDIO: UNKNOWN
+        </button>
+    </div>
+
+    <audio id="globalBgMusic" loop src="die-for-you.mp3"></audio>
+
+    <audio id="spikeTimerAudio" src="spike-timer.mp3"></audio>
+
+    <script>
+    const AUDIO_STORAGE_KEY = 'v_protocol_audio_state';
+    const AUDIO_TIME_KEY = 'v_protocol_audio_time'; // NEW: Tracks song timestamp
+    const bgAudio = document.getElementById('globalBgMusic');
+    const audioBtn = document.getElementById('audioToggleBtn');
+
+    bgAudio.volume = 0.2;
+
+    // 1. INITIALIZATION: Read state and exact timestamp
+    window.addEventListener('DOMContentLoaded', () => {
+        const audioState = localStorage.getItem(AUDIO_STORAGE_KEY);
+        const savedTime = localStorage.getItem(AUDIO_TIME_KEY);
+
+        // Resume song from exact saved time
+        if (savedTime) {
+            bgAudio.currentTime = parseFloat(savedTime);
+        }
+
+        if (audioState === 'enabled') {
+            updateAudioUI(true);
+            bgAudio.play().catch(err => {
+                document.body.addEventListener('click', primaryClickAudioTrigger, { once: true });
+            });
+        } else {
+            updateAudioUI(false);
+        }
+    });
+
+    // 2. TIME-SYNC: Save exact millisecond before page unloads
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem(AUDIO_TIME_KEY, bgAudio.currentTime);
+    });
+
+    // Browser bypass action
+    function primaryClickAudioTrigger() {
+        const audioState = localStorage.getItem(AUDIO_STORAGE_KEY);
+        if (audioState === 'enabled') {
+            bgAudio.play().catch(err => console.log("Audio sandbox block:", err));
+        }
+    }
+
+    // TOGGLE ACTION
+    function toggleGlobalAudio() {
+        const audioState = localStorage.getItem(AUDIO_STORAGE_KEY);
+        
+        if (audioState !== 'enabled') {
+            localStorage.setItem(AUDIO_STORAGE_KEY, 'enabled');
+            bgAudio.play().catch(err => console.log("Interaction required."));
+            updateAudioUI(true);
+        } else {
+            localStorage.setItem(AUDIO_STORAGE_KEY, 'disabled');
+            bgAudio.pause();
+            updateAudioUI(false);
+        }
+    }
+
+    // UI RENDERING
+    function updateAudioUI(isEnabled) {
+        if (isEnabled) {
+            audioBtn.innerText = "🔊 AUDIO: ACTIVE";
+            audioBtn.style.borderColor = "#00f3c5";
+            audioBtn.style.color = "#00f3c5";
+        } else {
+            audioBtn.innerText = "🔇 AUDIO: MUTED";
+            audioBtn.style.borderColor = "#383e47";
+            audioBtn.style.color = "#ece8e1";
+        }
+    }
+</script>
+</body>
+</html>
